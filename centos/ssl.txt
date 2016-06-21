@@ -1,0 +1,43 @@
+■自己証明証
+・参考サイト
+http://dotnsf.blog.jp/archives/3181024.html
+http://d.hatena.ne.jp/ozuma/20130511/1368284304
+
+■必要モジュールをインストールする
+# rpm -qa | grep openssl
+# rpm -qa | grep mod_ssl
+
+・入ってなければインストール
+# yum install openssl
+# yum install mod_ssl
+
+■秘密鍵を生成
+# cd /etc/httpd/conf
+# openssl genrsa 2048 > server.key
+# openssl req -new -key server.key > server.csr
+# openssl x509 -days 3650 -req -signkey server.key < server.csr > server.crt
+
+■ssl.conf
+・設定ファイル
+/etc/httpd/conf.d/ssl.conf
+
+<VirtualHost _default_:443>
+  ErrorLog logs/ssl_error_log
+  TransferLog logs/ssl_access_log
+  LogLevel warn
+  SSLEngine on
+  SSLProtocol all -SSLv2
+  SSLCipherSuite ALL:!ADH:!EXPORT:!SSLv2:RC4+RSA:+HIGH:+MEDIUM:+LOW
+  SSLCertificateFile /etc/httpd/conf/ssl.crt/server.crt
+  SSLCertificateKeyFile /etc/httpd/conf/ssl.key/server.key
+  <Files ~ "\.(cgi|shtml|phtml|php3?)$">
+    :
+  </Files>
+</VirtualHost>
+
+・再起動
+# service httpd restart
+# /etc/rc.d/init.d/httpd restart
+
+■ポート開放
+

@@ -5,6 +5,21 @@
 ・公開フォルダー
 /var/www/html
 
+
+■ディレクトリ例
+/etc/httpd/conf/extra/
+/etc/httpd/conf/extra/httpd-vhosts.conf
+
+/etc/httpd/conf/ssl.crl/
+/etc/httpd/conf/ssl.crt/
+/etc/httpd/conf/ssl.csr/
+/etc/httpd/conf/ssl.key/
+
+■httpd.confモジュール例
+# Virtual hosts
+include “conf/extra/httpd-vhosts.conf
+
+
 ■インストール
 # yum -y install httpd
 # yum remove httpd
@@ -22,6 +37,9 @@
 ・サービス起動
 # service httpd start
 # service httpd restart
+
+# /etc/rc.d/init.d/httpd start
+# /etc/rc.d/init.d/httpd restart
 
 ■ヴァーチャルホスト設定
 # Ensure that Apache listens on port 80
