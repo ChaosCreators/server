@@ -1,0 +1,135 @@
+■ssh設定
+
+.../ssh.txt参照
+
+■iptables設定
+
+../iptables.txt参照
+
+■yumアップデート
+# yum update
+
+■nmapインストール
+# yum -y install nmap
+
+■nodejs用ユーザー作成
+# useradd node
+# passwd node
+# usermod -G wheel node
+※sudoコマンドを使用できるのはwheelグループのみなのでsudoを使用できる用に追加する
+
+# visudo
+※wheelグループのコメントアウトを解除する
+
+■nodejsインストール
+
+# sudo yum install epel-release
+# sudo yum install nodejs
+# node -v
+# sudo yum install -y npm --enablerepo=epel
+
+■nodeのプログラムを常駐させる
+# sudo npm install forever -g
+# foever start example.js
+※オプションの「-g」はグローバルインストールの意で，npmのインストール場所にパッケージをインストールします。
+付けない場合は，カレントディレクトリのnode_modules内にインストールされます。
+
+-------------------------------------------------------------------
+example.js
+
+var http = require('http');
+ 
+http.createServer(function (request, response) {
+  response.writeHead(200, {'Content-Type': 'text/plain'});
+  response.end('Hello World\n');
+}).listen(8124);
+ 
+console.log('Server running at http://127.0.0.1:8124/');
+
+
+-------------------------------------------------------------------
+・実行エラー
+.listen(80, '0.0.0.0', function(){process.setuid([uid])});
+
+# id -u node
+
+こちらのuidを追加する
+
+# sudo node example.js　sudoで実行しないと怒られる。
+
+
+■npm list [-g]
+現在インストールしているパッケージの一覧を見たいときは，listコマンドで行います。
+
+■npm uninstall [-g] ＜パッケージ名＞
+いずれも「-g」オプションでグローバルかカレントディレクトリかの切り替えができます。他にも様々な機能がnpmを通して使えます。
+
+
+-------------------------------------------------------------------
+古いので参考にならない。。。
+-------------------------------------------------------------------
+http://gihyo.jp/dev/serial/01/nodejs
+
+■express
+# npm install -g express ← 使えない
+# sudo npm install -g express-generator
+
+
+
+-------------------------------------------------------------------
+http://www.atmarkit.co.jp/ait/articles/1503/04/news047_3.html
+
+
+
+
+
+・MEANスタックで始めるWebアプリ開発入門
+http://www.atmarkit.co.jp/ait/articles/1505/11/news015_2.html
+
+
+・RDB開発者におくるNoSQLの常識
+http://www.atmarkit.co.jp/ait/articles/1102/24/news098_2.html
+
+
+
+http://gihyo.jp/dev/serial/01/mongodb/0005?page=3
+
+-------------------------------------------------------------------
+・インストール出来ない時
+http://mironal-memo.blogspot.jp/2012/07/vpscentos-6mongodb.html
+
+
+・設定ファイル
+/etc/mongod.conf
+
+
+MongoDB
+# yum insatll mongodb-org
+
+・起動
+# service mongod start
+
+
+・自動起動
+# chkconfig mongod on
+
+
+
+
+
+
+
+■80を待ち受けしapacheと共存させる方法
+
+apacheの待ち受けポートを変更した後に、nodejsのhttp-proxyにてルーティングを行う。
+
+・設定ファイルの編集
+# vi /etc/httpd/conf/httpd.conf
+
+Listen 8080
+NameVirtualHost *:8080
+<VirtualHost *:8080>
+
+
+</VirtualHost>
+

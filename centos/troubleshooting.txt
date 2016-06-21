@@ -1,0 +1,12 @@
+■ネットに繋がらない
+・外部ネットワークにpingが通らない
+
+# vi /etc/sysconfig/network
+GATEWAY=192.168.1.1
+↑追加する
+
+# service network restart
+
+■[user name] is not in the sudoers file. This incident will be reported.
+/etc/sudoers ファイルにsudoコマンドが利用できるユーザーを追加
+http://webkaru.net/linux/sudo-user-add/

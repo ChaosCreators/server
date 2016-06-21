@@ -1,0 +1,48 @@
+■SSHの状態を確認する
+#chkconfig --list | grep sshd
+
+
+■sshd_configの内容を変更する
+# cp sshd_config sshd_config.back
+
+・ルートログインを禁止する
+#PermitRootLogin yes
+↓
+PermitRootLogin no
+
+・通常のパスワードを鍵方式へ変更
+#PasswordAuthentication yes
+↓
+PasswordAuthentication no
+
+・から伸ばすワードを禁止
+#PermitEmptyPasswords no
+↓
+PermitEmptyPasswords no
+
+・設定ファイルを読み込み直し
+# /etc/rc.d/init.d/sshd reload
+
+
+■アクセス制御ファイルを変更する
+・「192.168.100.」からのアクセスを許可する場合
+# vi /etc/hosts.allow
+sshd : 192.168.100.
+
+・上記以外のアクセスを全て拒否する
+# vi /etc/hosts.deny
+ALL : ALL
+
+
+■SSHの再起動
+# /etc/rc.d/init.d/sshd restart
+CentOS7
+# systemctl start sshd.service
+
+※鍵の生成失敗時は一度かぎファイルを削除する
+
+
+■SSHの自動起動
+# chkconfig sshd on
+・ランレベルを3と5で自動起動する場合
+# chkconfig --level 35 sshd on

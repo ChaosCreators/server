@@ -1,0 +1,11 @@
+■export
+http://d.hatena.ne.jp/Akineko/20090825/1251187210
+
+・パスの確認方法
+
+# echo $PATH
+
+・パスを追加する場合
+# export PATH=$PATH;/usr/[パスを通す場所]
+
+・

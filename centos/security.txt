@@ -1,0 +1,20 @@
+■SYNクッキーを有効にする（SYN攻撃対策）
+http://www.atmarkit.co.jp/ait/articles/1007/14/news102_3.html
+
+# echo '1' > /proc/sys/net/ipv4/tcp_syncookies
+　 または、
+# sysctl -w net.ipv4.tcp_syncookies=1
+SYNクッキーを有効にする
+
+
+/etc/sysctl.confで再起動後も設定を有効にする
+net.ipv4.tcp_syncookies=1　←追加
+
+
+■ブロードキャストpingに答えない（Smurf攻撃対策）
+# echo '1' > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts
+　 または、
+# sysctl -w net.ipv4.icmp_echo_ignore_broadcasts=1
+
+/etc/sysctl.confで再起動後も設定を有効にする
+net.ipv4.icmp_echo_ignore_broadcasts=1　←追加

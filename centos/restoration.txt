@@ -1,0 +1,15 @@
+■grubが立ち上がった場合
+sda sdb のどちらかにGRUBがインストールされている場合
+生きている方の領域から読み込むようにする
+起動時にEを押す
+sdaの故障の場合
+root (hd0,0)　e　→　(hd1,0) へ変更後reboot
+
+
+
+・sdaが故障の場合
+http://d.hatena.ne.jp/silenvx/20120725/1343169224
+コード表示 2.8: GRUBをMBRにインストールする
+grub> root (hd1,0)          (/bootパーティションの場所を指定します)
+grub> setup (hd1)           (MBRにGRUBをインストールします)
+grub> quit                  (GRUBシェルを終了します)

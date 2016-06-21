@@ -1,0 +1,131 @@
+■iptables
+iptablesは、Linuxに実装されたIPv4用のパケットフィルタリングおよびネットワークアドレス変換 (NAT) 機能（複数のNetfilterモジュールとして実装されている）の設定を操作するコマンドのこと。 Netfilterは、いわゆるファイアウォールやルータとしての役割を果たす。
+
+・設定ファイル
+/etc/sysconfig/iptables
+
+■基本コマンド
+・動作確認
+# chkconfig iptables --list
+
+・現在の設定
+# iptables -L -n
+[-n : port number]
+
+・再起動
+# /etc/rc.d/init.d/iptables resatart
+
+
+http://dream.jp/vps/support/manual/mnl_security_04.html
+
+http://nekopunch.hatenablog.com/entry/2015/01/16/112402
+# iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+----------------------------------------------------------------------------------------------------
+*filter
+:INPUT DROP [0:0]
+:FORWARD DROP [0:0]
+:OUTPUT ACCEPT [0:0]
+-A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+-A INPUT -p icmp -j ACCEPT
+-A INPUT -i lo -j ACCEPT
+# SSH
+-A INPUT -s 192.168.100.0/24 -m state --state NEW -m tcp -p tcp --dport 22 -j ACCEPT
+# SMTP IMAP
+-A INPUT -s 192.168.100.0/24 -m state --state NEW -m tcp -p tcp --dport 25 -j ACCEPT
+-A INPUT -s 192.168.100.0/24 -m state --state NEW -m tcp -p tcp --dport 143 -j ACCEPT
+# IMAP
+-A INPUT -p tcp --dport 143 -j ACCEPT
+COMMIT
+
+----------------------------------------------------------------------------------------------------
+■セキュリティー強化
+http://www.atmarkit.co.jp/ait/articles/1007/14/news102_2.html
+
+-A INPUT -p tcp --syn -m state --state NEW --dport 22 -m limit --limit 1/m --limit-burst 1 -j ACCEPT
+
+・-m state --syn --state NEW
+ssh接続中のパケットは規制しないよう、ssh接続開始時のリクエストパケットだけを制限する
+
+・パケット規制
+-m limit --limit 1/m --limit-burst 1
+
+-m limit            ：limitモジュールを有効化
+--limit 1/m         ：1分に1回
+--limit-burst 1     ：1回以上は破棄される
+
+■セキュリティー強化2
+http://blog.nzakr.com/vps-setting/
+
+#サーバへの攻撃対策
+sudo iptables -A INPUT -p tcp --tcp-flags ALL NONE -j DROP
+sudo iptables -A INPUT -p tcp ! --syn -m state --state NEW -j DROP
+sudo iptables -A INPUT -p tcp --tcp-flags ALL ALL -j DROP
+
+#通信内容の制限
+sudo iptables -A INPUT -i lo -j ACCEPT
+sudo iptables -A INPUT -p icmp -j ACCEPT
+
+#確立済みの通信を許可
+sudo iptables -I INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+#パケットの設定
+sudo iptables -P INPUT DROP
+sudo iptables -P OUTPUT ACCEPT
+
+
+----------------------------------------------------------------------------------------------------
+http://www13.big.or.jp/~rinken/computer/server/centos/iptables.html
+● 現在の設定の確認
+iptables -L
+
+● FORWARDは使わない
+iptables -P FORWARD DROP
+
+● まずは全許可に
+iptables -P INPUT ACCEPT
+
+● デフォルトのルールを全て削除
+iptables -F
+
+● 自分自身からのパケットは全許可
+iptables -A INPUT -i lo -j ACCEPT
+
+● SSH許可 or SSH自分(255.255.255.255)だけ許可
+iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+ or
+iptables -A INPUT -s 255.255.255.255 -p tcp --dport 22 -j ACCEPT
+
+● FTP(20,21,4000-4029) の接続を許可
+iptables -A INPUT -p tcp --dport 20 -j ACCEPT
+iptables -A INPUT -p tcp --dport 21 -j ACCEPT
+iptables -A INPUT -p tcp --dport 4000:4029 -j ACCEPT
+
+● http, https の接続を許可
+iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+iptables -A INPUT -p tcp --dport 443 -j ACCEPT
+
+● POP(受信メール)の許可
+iptables -A INPUT -p tcp --dport 110 -j ACCEPT
+
+● SMTP(送信メール)の許可【これをしないと世間からメールが来なくなる！】
+iptables -A INPUT -p tcp --dport 25 -j ACCEPT
+
+● SUBMISSION ポートを開放
+iptables -A INPUT -p tcp --dport 587 -j ACCEPT
+
+● PostgreSQLも外から使います
+iptables -A INPUT -p tcp --dport 5432 -j ACCEPT
+
+● DNS関係
+iptables -A INPUT -p tcp --dport 53 -j ACCEPT
+iptables -A INPUT -p udp --dport 53 -j ACCEPT
+
+● PINGを許可
+iptables -A INPUT -p icmp -j ACCEPT
+
+● TCPの接続開始と応答、FTPデータなどを許可【これをしないと外にメールが飛ばなくなる】
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+● 設定したルール以外のパケットを拒否
+iptables -P INPUT DROP

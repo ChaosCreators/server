@@ -1,0 +1,13 @@
+■
+
+
+
+■基本コマンド
+・インストール
+# yum install nmap
+# yum -y install nmap
+-y：問い合わせがあったときにすべて「y」と答える
+
+■ポートスキャン
+# nmap -p 1-10022 localhost
+-p：ポート

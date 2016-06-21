@@ -1,0 +1,5 @@
+■基本コマンド
+・レポジトリの更新
+# yum clean all
+# yum update
+

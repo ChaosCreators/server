@@ -1,0 +1,29 @@
+■インストール済みのパッケージ一覧
+# rpm -qa
+# rpm -qa | grep postfix
+
+・場所を探す
+# rpm -ql postfix
+
+■chkconfig
+・サービスの一覧を確認
+# chkconfig --list
+# chkconfig --list | grep postfix
+# chkconfig postfix --list
+
+・サービスの自動起動切り替え
+# chkconfig postfix on
+# chkconfig postfix off
+
+■ログインユーザー作成
+・ログイン出来ないユーザーを作成する
+# useradd -s /sbin/nologin apache
+# passwd apache ********
+
+
+■ユーザー一覧
+cat /etc/passwd
+
+
+■wget
+ンストール先は基本的に /usr/local/bin/ です。 

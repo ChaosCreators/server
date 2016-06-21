@@ -1,0 +1,14 @@
+http://akira-arets.blogspot.jp/2012/02/centos62-parted-create-partition.html
+
+■raid状態確認
+# cat /proc/mdstat
+md0 : active raid1 sda1[0] sdb1[2]
+      1048512 blocks super 1.0 [2/2] [U_]
+      bitmap: 0/1 pages [0KB], 65536KB chunk
+
+・パーティションの状態が「U_」等になっている場合は故障
+
+■RAIDデバイスを故障状態にする
+# mdadm --manage /dev/md0 --fail /dev/sda1
+# mdadm --manage /dev/md1 --fail /dev/sda2
+# mdadm --manage /dev/md2 --fail  /dev/sda3

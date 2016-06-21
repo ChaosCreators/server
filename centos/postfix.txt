@@ -1,0 +1,90 @@
+■Postfix
+・設定ファイル
+/etc/postfix/main.cf
+
+・ログファイル
+/var/log/maillog
+
+■基本コマンド
+・動作確認
+# chkconfig postfix --list
+
+・起動
+# /etc/rc.d/init.d/postfix start
+# /etc/rc.d/init.d/postfix stop
+
+・自動起動
+# chkconfig postfix on
+
+xc再起動
+# /etc/init.d/postfix restart
+
+・基本設定項目
+sendmailがインストールされている場合は停止
+# /etc/rc.d/init.d/sendmail stop
+
+
+http://wiasth.hatenablog.com/entry/2014/12/27/013921
+
+■テスト配信
+mail monitor@localhost.localdomain
+
+----------------------------------------------------------------------------------------------------
+■ローカル向けのサーバー設定
+# vi /etc/postfix/main.cf
+mydomain = centos.local
+
+・#外す
+myorigin = $mydomain
+
+・localhost以外からのメール中継を出来るようにする
+inet_interfaces = all
+
+・ローカルユーザーへ配信する必要のあるメールかどうかを判定する
+mydestination = $myhostname, localhost.$mydomain, localhost, $mydomain
+
+・ローカルのみ
+mynetworks = localhost
+※メールクライアントの所属するネットワーク設定
+mynetworks = 192.168.100.0/24, 127.0.0.0/8
+
+・メールボックスはMaildir形式を使う
+home_mailbox Maildir/
+
+■サーバーの再起動
+# service postfix restart
+
+■Maildirを作成するようにする
+# mkdir -p /etc/skel/Maildir/{new,cur,tmp}　
+# chmod -R 700 ~/Maildir
+
+■メールアカウントの作成
+# useradd monitor
+# passwd monitor
+
+■チェック
+# mail monitor@centos.local
+
+■外からのアクセスを許可する場合は
+iptable.txtを参照
+
+
+----------------------------------------------------------------------------------------------------
+■トラブルシューティング
+cmdから
+>telnet 192.168.100.*** 25
+接続中: 192.168.100.***...ホストへ接続できませんでした。 ポート番号 25: 接続に失敗しました
+
+・hosts.allowの設定確認
+# vi /etc/hosts.allow
+全許可
+ALL : 192.168.100. 
+サービスごとの許可
+smtp : 192.168.100.
+sshd : 192.168.100.
+
+・ネットワーク接続一覧の確認
+# netstat -lnp
+tcp 0 0 0.0.0.022
+tcp 0 0 127.0.0.1:25
+127.0.0.1ローカルからのみ接続許可の状態になっているのでmain.cfのmynetworkを見直す
