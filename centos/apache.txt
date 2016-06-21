@@ -1,0 +1,47 @@
+■apache
+.設定ファイル
+/etc/httpd/conf/httpd.conf
+
+・公開フォルダー
+/var/www/html
+
+■インストール
+# yum -y install httpd
+# yum remove httpd
+# rpm -qa httpd
+
+■アパッチユーザー
+# cat /etc/passwd | grep apache
+
+■サービス起動確認
+# chkconfig —list | grep httpd
+
+・自動起動
+# chkconfig http on
+
+・サービス起動
+# service httpd start
+# service httpd restart
+
+■ヴァーチャルホスト設定
+# Ensure that Apache listens on port 80
+Listen 80
+
+# Listen for virtual host requests on all IP addresses
+NameVirtualHost *:80
+
+<VirtualHost *:80>
+DocumentRoot /var/www/html
+ServerName ***.***.***.***
+
+# Other directives here
+
+</VirtualHost>
+
+<VirtualHost *:80>
+DocumentRoot /www/example2
+ServerName www.example.org
+
+# Other directives here
+
+</VirtualHost> 
