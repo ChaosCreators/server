@@ -1,0 +1,20 @@
+■dovecot
+Dovecot(ダヴコット)とは、UNIX系のOS上で動作する、POP3とIMAPのサーバーである。 セキュアなシステムを意識した設計方針をとり、Timo Sirainenらによって開発・公開されている。 Courier-MTAやUW IMAPに変わり、標準的な地位を占めるようになっている。
+
+・設定ファイル
+/etc/dovecot/dovecot.conf
+
+■基本コマンド
+・起動
+# /etc/rc.d/init.d/dovecot start
+# chkconfig dovecot on
+
+
+■設定例
+・プロトコルを設定する
+# vi /etc/dovecot/dovecot.conf
+protocols = imap pop3 lmtp
+
+・メールファイルの場所を変更
+# vi /etc/dovecot/conf.d/10-mail.conf
+mail_location = maildir:~/Maildir
